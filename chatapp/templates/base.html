@@ -1,4 +1,6 @@
 {% load static %}
+{% load account %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -18,7 +20,11 @@
         <div class="menus">
           <div class="menu">
             <p>Chat</p>
-            <p>LogIn With Google</p>
+            {% if user.is_authenticated  %}
+              <a href="logout/"><p>logout</p></a>
+            {% else %}
+              <a href="{% provider_login_url 'google' process='connect' %}?next=/"><p>LogIn With Google</p></a>
+            {% endif %}
             <strong id="menu-btn"><i class="bi bi-list" id="icon-btn"></i></strong>
           </div>
         </div>
