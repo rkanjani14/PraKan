@@ -1,0 +1,184 @@
+{% load static %}
+{% block content %}
+<!-- Bootstrap Icon Link -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" />
+
+<!-- chat-page style page is linked to this page -->
+<link rel="stylesheet" href="{% static 'css/chat.css' %}">
+
+<body>
+{% if user.is_authenticated %}
+  <input type="hidden" id="logged-in-user" value="{{user.id}}">
+{% endif %}
+<div class="container">
+    <!-- Main side -->
+    <div class="main-side">
+        <div class="main-side-container">
+            <!-- Head part start -->
+            <div class="head-part">
+                <img src="{{ user.socialaccount_set.all.0.get_avatar_url}}" alt="" class="head-part-img">
+                <div class="three-dots">
+                      <div class="dropdown">
+                           <button onclick="myFunction()" class="dropbtn"><i class="bi bi-three-dots-vertical"></i></button>
+                          <div id="myDropdown" class="dropdown-content">
+                            <span id="user_first_name">{{ user.first_name }}</span>
+                            <a href="/">Home</a>
+                            <a href="/logout/">Logout</a>
+                          </div>
+                      </div>
+                </div>
+            </div>
+            <!-- Head part End -->
+
+            <!-- Search Bar Start -->
+            <div class="search-bar">
+                <div class="search-bar-wrap">
+                    <input type="text" placeholder="Search or start a new chat" id="search-person" class="search-bar-input">
+                    <div class="search-bar-icon-div">
+                        <span class="search-bar-icon-span"><i class="bi bi-search"></i></span>
+                    </div>
+                </div>
+            </div>
+            <!-- Search Bar End -->
+
+            <!-- Contact List Start -->
+            <div class="contact-list">
+                <div class="contact-list-wrap">
+                    {% for thread in Threads %}
+                    <div class="contact-list-person" chat-id="chat_{{ thread.id  }}" other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}">
+                        <div class="contact-list-person-img">
+                            <img src="{% if thread.first_person == user %}
+                              {{ thread.second_person.socialaccount_set.all.0.get_avatar_url }}
+                              {% else %}
+                              {{ thread.first_person.socialaccount_set.all.0.get_avatar_url }}
+                              {% endif %}"   alt="">
+                        </div>
+                        <div class="contact-list-person-name-lmsg">
+                          {% if thread.first_person == user %}
+                            <p class="person-name"> {{ thread.second_person.first_name }} </p>
+                          {% else %}
+                            <p class="person-name"> {{ thread.first_person.first_name }} </p>
+                          {% endif %}
+                              <p class="last-message">{{ thread.chatmessage_thread.last.message}}</p>
+                        </div>
+                        <div class="contact-list-day">
+                            <span>{{ thread.chatmessage_thread.last.timestamp|date:"l"}}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Contact List End -->
+
+            <!-- Search Contact List Start-->
+            <div class="search-contact-list">
+                <div class="contact-list-wrap">
+                    {% for one_user in other_users %}
+                    <div class="contact-list-person" other-user-id="{{ one_user.id }}">
+                        <div class="contact-list-person-img">
+                            <img src="{{ one_user.socialaccount_set.all.0.get_avatar_url }}"   alt="">
+                        </div>
+                        <div class="contact-list-person-name-lmsg">
+                            <p class="person-name">{{ one_user.first_name }}</p>
+                            <p class="last-message"></p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!--  Search Contact List End-->
+        </div>
+    </div>
+    <!-- Main side End -->
+
+    <!-- Chat side start -->
+    {% for thread in Threads %}
+    <div class="chat-side" chat-id="chat_{{ thread.id }}" other-user-id="{% if thread.first_person == user %}{{ thread.second_person.id }}{% else %}{{ thread.first_person.id }}{% endif %}">
+        <div class="msg-header">
+            <div class="container1">
+                <img src="{% if thread.first_person == user %}
+                  {{ thread.second_person.socialaccount_set.all.0.get_avatar_url }}
+                  {% else %}
+                  {{ thread.first_person.socialaccount_set.all.0.get_avatar_url }}
+                  {% endif %}" alt="" class="msgimg">
+                <div class="active">
+                    <p>
+                      {% if thread.first_person == user %}
+                        {{ thread.second_person.first_name }}
+                      {% else %}
+                        {{ thread.first_person.first_name}}
+                      {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="chat-page">
+            <div class="msg-inbox">
+                <div class="chats">
+                    <div class="msg-page">
+
+                     {% for chat in thread.chatmessage_thread.all %}
+                          {% if chat.user == user %}
+                          <div class="outgoing-chats">
+                              <div class="outgoing-chats-img">
+                                  <img src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="">
+                              </div>
+                              <div class="outgoing-msg">
+                                  <div class="outgoing-chats-msg">
+                                      <p class="multi-msg">
+                                          {{chat.message}}
+                                      </p>
+                                      <span class="time">{{ chat.timestamp|time:"g : i A"}} | {{ chat.timestamp|date:"d M"}}</span>
+                                  </div>
+                              </div>
+                          </div>
+                          {% else %}
+                            <div class="received-chats">
+                            <div class="received-chats-img">
+                                <img src="{% if chat.thread.first_person == user %}
+                                  {{ chat.thread.second_person.socialaccount_set.all.0.get_avatar_url }}
+                                  {% else %}
+                                  {{ chat.thread.first_person.socialaccount_set.all.0.get_avatar_url }}
+                                  {% endif %}" alt="">
+                            </div>
+                            <div class="received-msg">
+                                <div class="received-msg-inbox">
+                                    <p>{{ chat.message }}</p>
+                                    <span class="time">{{chat.timestamp|time:"g : i A" }} | {{ chat.timestamp|date:"d M"}} </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                </div>
+                <div class="msg-bottom">
+                    <div class="input-group">
+                        <input type="text" class="form-control input-message" placeholder="Write Message...">
+                        <div class="input-group-append">
+                            <span class="input-group-text send-icon"><i class="bi bi-send send-button"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <!-- Chat side End -->
+</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/chat.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script type="text/javascript">
+   var name_may_with_space = "{{user.first_name}}";
+   var name_part_list = name_may_with_space.split(" ")
+   var first_name = name_part_list[0]
+   var user_name_div = document.getElementById('user_first_name')
+   user_name_div.innerHTML = first_name;
+   var user_avatar = "{{ user.socialaccount_set.all.0.get_avatar_url}}"
+   function getAvatarUrl(receiver_user_id, chat_id){
+   }
+</script>
+<script src="{% static 'js/websocket.js' %}"></script>
+{% endblock %}
