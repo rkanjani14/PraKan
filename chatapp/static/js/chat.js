@@ -34,9 +34,6 @@ function myFunction() {
   document.getElementById("myDropdown").classList.toggle("show");
 }
 
-// always keep scroolbar at the bottom in div
-$('.msg-page').scrollTop($('.msg-page')[0].scrollHeight);
-
 // Click enter button & send message
 $(document).on('keydown','.input-message',function(event){
   if(event.keyCode == 13){

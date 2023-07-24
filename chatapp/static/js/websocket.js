@@ -2,7 +2,7 @@ $(document).ready(function(){
 // WebSocket creation start
 let loc = window.location
 webStart = 'ws://'
-if(loc.protocol == 'https'){
+if(loc.protocol == 'https:'){
   webStart = 'wss://'
 }
 let endPoint = webStart + loc.host + loc.pathname
