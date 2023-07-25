@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-
 * {
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
@@ -27,6 +26,7 @@ a{
   height: 100%;
   border-right:1px solid #ccc;
 }
+
 .head-part{
     display:inline-block;
     width: 100%;
@@ -191,7 +191,6 @@ a{
     background: #555;
 }
 
-
 /* Chat Side CSS */
 .chat-side{
     width:65%;
@@ -236,7 +235,6 @@ img{
 }
 
 .msg-inbox{
-
 }
 
 .chats{

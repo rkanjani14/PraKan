@@ -47,12 +47,10 @@ ws.onmessage = function(event) {
 
 ws.onerror = function(event) {
     console.log('socket connection error!')
-    alert('error shown...')
 }
 
 ws.onclose = function(event) {
     console.log('socket connection close!')
-    alert('connection closed...')
 }
 
 function addMessage(message,sent_by,chat_id,receiver_user_avatar){
