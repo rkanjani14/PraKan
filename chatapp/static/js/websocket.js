@@ -5,7 +5,7 @@ webStart = 'ws://'
 if(loc.protocol == 'https:'){
   webStart = 'wss://'
 }
-let endPoint = webStart + loc.host + loc.pathname
+let endPoint = webStart + loc.host + "ws" + loc.pathname
 let ws = new WebSocket(endPoint);
 // Websocket creation end
 
